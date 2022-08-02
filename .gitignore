@@ -1,2 +1,9 @@
 /*
 !/.gitignore
+!/requirements.txt
+!/runtime.txt
+!/Procfile
+!/README.md
+!/.env.sample
+!/src/
+/src/__pycache__/
