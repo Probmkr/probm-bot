@@ -1,1 +1,1 @@
-web: python src/bot.py
+discordpy: python src/bot.py
