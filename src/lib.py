@@ -1,5 +1,9 @@
 from enum import Enum
 from typing import TypeAlias
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class LogTypes(Enum):
     FATAL=1
@@ -11,10 +15,14 @@ class LogTypes(Enum):
 
 LT: TypeAlias = LogTypes
 
+default_log_type: LT = LT(int(os.getenv("LOG_TYPE_NUM", "5")))
+
+DLT: TypeAlias = default_log_type
+
 def log_format(log_type: LT):
     return f"[ {log_type.name:7} ]"
 
-class Logging:
+class Logger:
     def __init__(self, log_type: LogTypes):
         self.log_type = log_type
 
