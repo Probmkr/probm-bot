@@ -16,9 +16,10 @@ ADMIN_IDS: List[int] = list(map(int, os.getenv("ADMIN_IDS").split(",")))
 bot = commands.Bot(command_prefix='th!', intents=disnake.Intents.all(), sync_commands=True, reload=True)
 logger = Logger(DLT)
 
-bot.add_cog(OnReady(bot))
 bot.add_cog(Ping(bot))
 bot.add_cog(MessagePing(bot))
+bot.add_cog(Verify(bot))
+bot.add_cog(OnReady(bot))
 
 # @bot.command()
 # async def ping(ctx: commands.Context):
