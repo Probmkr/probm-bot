@@ -1,31 +1,33 @@
-from enum import Enum
-from typing import TypeAlias
+from typing import List
+from urllib import parse
+from var import API_URL, CC, LC, LT, DLT
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
-class LogTypes(Enum):
-    FATAL=1
-    ERROR=2
-    WARNING=3
-    INFO=4
-    DEBUG=5
-    TRACE=6
 
-LT: TypeAlias = LogTypes
+def urlencode(url):
+    return parse.quote(url, safe="")
 
-default_log_type: LT = LT(int(os.getenv("LOG_TYPE_NUM", "5")))
 
-DLT: TypeAlias = default_log_type
+def color_text(text: str, color: CC):
+    return f"{color.value}{text}{color.value}{CC.COLOR_DEFAULT.value}"
+
+
+class Logger:
+    def __init__(self, log_type: LT = DLT):
+        self.log_type = log_type
+
+    def log(self, log_type: LT, message: str):
+        if log_type.value <= self.log_type.value:
+            print_text = color_text(f"{log_format(log_type)}: {message}"
+                                    .replace("\n", f"\n{log_format(log_type)}: "), LC[log_type.name].value)
+            print(print_text)
+
 
 def log_format(log_type: LT):
     return f"[ {log_type.name:7} ]"
 
-class Logger:
-    def __init__(self, log_type: LogTypes):
-        self.log_type = log_type
 
-    def log(self, log_type: LogTypes, message: str):
-        if log_type.value <= self.log_type.value:
-            print(f"{log_format(log_type)}: {message}".replace("\n", f"\n{log_format(log_type)}: "))
+def get_oauth_url(client_id: int | str, redirect_url: str, scope: List[str] = ["identify"], state=None):
+    return f"{API_URL}/oauth2/authorize?client_id={client_id}&redirect_uri={urlencode(redirect_url)}&response_type=code&scope={'%20'.join(scope)}" + ("&state=" + urlencode(state)) if state else ""

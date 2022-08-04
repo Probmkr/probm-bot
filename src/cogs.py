@@ -1,9 +1,9 @@
-from ast import alias
 from disnake.ext import commands
-from lib import LT, Logger, DLT
+from lib import Logger, get_oauth_url
+from var import LT
 import disnake
 
-logger = Logger(DLT)
+logger = Logger()
 
 
 class OnReady(commands.Cog):
@@ -63,16 +63,26 @@ class Verify(commands.Cog):
         disnake.Option(name="role", description="role to get",
                        type=disnake.OptionType.role, required=True)
     ])
+
     async def get_role(self, interaction: disnake.ApplicationCommandInteraction):
         if interaction.author.guild_permissions.administrator:
             view = disnake.ui.View()
             button = disnake.ui.Button(
-                label="Get Role", style=disnake.ButtonStyle.primary, custom_id="get_role")
-            button.callback = lambda inter: self.give_role(
-                inter, interaction.options["role"])
+                label="Get Role", style=disnake.ButtonStyle.primary, custom_id="get_role", url=get_oauth_url())
+            # button.callback = lambda inter: self.give_role(
+            #     inter, interaction.options["role"])
             view.add_item(button)
             embed = disnake.Embed(
                 title="Get Role", description="You can click the button below to get a role.", color=0x5555ee)
             await interaction.response.send_message(embed=embed, view=view)
         else:
             await interaction.response.send_message("You need administrator permissions to use this command!", ephemeral=True)
+
+
+class LogCommands(commands.Cog):
+    def __init__(self, bot: disnake.Client):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction: disnake.ApplicationCommandInteraction):
+        logger.log(LT.TRACE, f"{interaction.author.name} sent command `{interaction.application_command.name}`")
