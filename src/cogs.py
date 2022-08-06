@@ -68,7 +68,7 @@ class Verify(commands.Cog):
         if interaction.author.guild_permissions.administrator:
             view = disnake.ui.View()
             button = disnake.ui.Button(
-                label="Get Role", style=disnake.ButtonStyle.primary, custom_id="get_role", url=get_oauth_url())
+                label="Get Role", style=disnake.ButtonStyle.primary, url=get_oauth_url())
             # button.callback = lambda inter: self.give_role(
             #     inter, interaction.options["role"])
             view.add_item(button)
