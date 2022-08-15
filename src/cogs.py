@@ -1,5 +1,4 @@
 from time import sleep
-from turtle import color
 from typing import List
 from disnake.ext import commands
 from lib import Logger, get_commands, get_oauth_url
