@@ -1,14 +1,16 @@
 from enum import Enum
+import json
 from typing import List, TypeAlias
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-TOKEN: str = os.getenv("TOKEN")
+TOKEN: str = os.getenv("BOT_TOKEN")
 BOT_ID: int = int(os.getenv("BOT_ID"))
 BOT_SECRET: str = os.getenv("BOT_SECRET")
-ADMIN_IDS: List[int] = list(map(int, os.getenv("ADMIN_IDS").split(",")))
+ADMIN_IDS: List[int] = json.loads(os.getenv("ADMIN_IDS"))
+ROLE_OAUTH_URL: str = os.getenv("ROLE_OAUTH_URL")
 
 API_URL = "https://discord.com/api"
 API_URL_V10 = "https://discord.com/api/v10"
