@@ -72,7 +72,7 @@ class Others(commands.Cog):
 
 
 class OnReady(commands.Cog):
-    def __init__(self, bot: disnake.Client):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     async def first_log_commands(self):
@@ -92,7 +92,7 @@ class OnReady(commands.Cog):
 
 
 class Ping(commands.Cog):
-    def __init__(self, bot: disnake.Client):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.slash_command(description="ping to bot")
@@ -122,7 +122,7 @@ class Ping(commands.Cog):
 
 
 class Verify(commands.Cog):
-    def __init__(self, bot: disnake.Client):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     async def give_role(self, interaction: disnake.ApplicationCommandInteraction, role: disnake.Role):
@@ -155,3 +155,19 @@ class Verify(commands.Cog):
             await interaction.response.send_message(embed=embed, view=view)
         else:
             await interaction.response.send_message("You need administrator permissions to use this command!", ephemeral=True)
+
+
+class NewCogTest(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
+    @commands.command()
+    async def extest(self, ctx: commands.Context):
+        await ctx.send("まさか Cogs も自動でロードされたりして...")
+
+def setup(bot: commands.Bot):
+    bot.add_cog(Ping(bot))
+    bot.add_cog(Verify(bot))
+    bot.add_cog(OnReady(bot))
+    bot.add_cog(Others(bot))
+    bot.add_cog(NewCogTest(bot))

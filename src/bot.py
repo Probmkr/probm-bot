@@ -10,13 +10,10 @@ bot = commands.Bot(command_prefix='th!',
 logger = Logger()
 logger.log(LT.INFO, f"log level is set to {logger.log_type.name}")
 
-bot.add_cog(Ping(bot))
-bot.add_cog(Verify(bot))
-bot.add_cog(OnReady(bot))
-bot.add_cog(Others(bot))
-
 # @bot.command()
 # async def ping(ctx: commands.Context):
 #     await ctx.send("pong!")
+
+bot.load_extension('cogs')
 
 bot.run(TOKEN)
