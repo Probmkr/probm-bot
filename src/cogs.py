@@ -23,16 +23,20 @@ class Others(commands.Cog):
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: disnake.ApplicationCommandInteraction):
+        if interaction.author.bot:
+            return
         logger.log(
             LT.TRACE,
-            f"{interaction.author.name} sent command `{interaction.application_command.name}` in `{interaction.guild.name if interaction.guild else 'DM'}`",
+            f"{interaction.author.name} sent {CC.BG_BLUE.value}command{CC.BG_DEFAULT.value} `{interaction.application_command.name}` in `{interaction.guild.name if interaction.guild else 'DM'}`",
         )
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
+        if message.author.bot:
+            return
         logger.log(
             LT.TRACE,
-            f"{message.author.name} sent message `{message.content}` in `{message.guild.name if message.guild else 'DM'}`",
+            f"{message.author.name} sent {CC.BG_CYAN.value}message{CC.BG_DEFAULT.value} `{message.content}` in `{message.guild.name if message.guild else 'DM'}`",
         )
 
     @commands.command()
@@ -45,7 +49,7 @@ class Others(commands.Cog):
         embed = disnake.Embed(
             title="Help",
             description="help about commands",
-            color=0x7799 + rnd.randrange(0, 0x100),
+            color=0xffffff,
         )
         slash_commands_text = ""
         message_commands_text = ""
@@ -56,9 +60,7 @@ class Others(commands.Cog):
         embed.add_field("Slash Commands", slash_commands_text, inline=False)
         embed.add_field("Message Commands",
                         message_commands_text, inline=False)
-        await interaction.response.send_message(
-            "this feature is not implemented yet", embed=embed
-        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @commands.slash_command(description="おみくじ")
     async def omikuji(self, interaction: disnake.ApplicationCommandInteraction):
@@ -121,7 +123,7 @@ class Ping(commands.Cog):
     @commands.slash_command(description="ping to bot")
     async def ping(self, interaction: disnake.ApplicationCommandInteraction):
         embed = disnake.Embed(
-            title="pong!", color=0x00FF00, timestamp=interaction.created_at
+            title="pong!", color=0x00ff00, timestamp=interaction.created_at
         )
         embed.add_field(
             name="Latency", value=f"`{round(self.bot.latency * 1000)}ms`")
@@ -130,7 +132,7 @@ class Ping(commands.Cog):
     @commands.slash_command(description="ping to bot silently")
     async def silent_ping(self, interaction: disnake.ApplicationCommandInteraction):
         embed = disnake.Embed(
-            title="pong!", color=0x00FF00, timestamp=interaction.created_at
+            title="pong!", color=0x00ff00, timestamp=interaction.created_at
         )
         embed.add_field(
             name="Latency", value=f"`{round(self.bot.latency * 1000)}ms`")
@@ -139,7 +141,7 @@ class Ping(commands.Cog):
     @commands.command(name="ping", aliases=["latency", "latence"])
     async def message_ping(self, ctx: commands.Context):
         embed = disnake.Embed(
-            title="pong!", color=0x00FF00, timestamp=ctx.message.created_at
+            title="pong!", color=0x00ff00, timestamp=ctx.message.created_at
         )
         embed.add_field(
             name="Latency", value=f"`{round(self.bot.latency * 1000)} ms`")
