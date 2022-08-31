@@ -12,6 +12,7 @@ BOT_SECRET: str = os.getenv("BOT_SECRET")
 ADMIN_IDS: List[int] = json.loads(os.getenv("ADMIN_IDS"))
 ROLE_OAUTH_URL: str = os.getenv("ROLE_OAUTH_URL")
 ROLE_OAUTH_SCOPE: List[str] = json.loads(os.getenv("ROLE_OAUTH_SCOPE", "[\"identify\"]"))
+DATABASE_URL: str = os.getenv("DATABASE_URL")
 
 API_URL = "https://discord.com/api"
 API_URL_V10 = "https://discord.com/api/v10"

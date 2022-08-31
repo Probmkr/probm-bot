@@ -7,3 +7,4 @@
 !/.env.sample
 !/src/
 /src/__pycache__/
+/src/.mypy_cache

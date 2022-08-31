@@ -1,8 +1,9 @@
 import json
 from typing import List, TypedDict
 from disnake.ext import commands
+from db import DBC
 from lib import Logger
-from var import TOKEN, LT
+from var import DATABASE_URL, TOKEN, LT
 from flask import Flask, request, jsonify
 from webserver import web
 import disnake
@@ -11,6 +12,7 @@ bot = commands.Bot(
     command_prefix="th!", intents=disnake.Intents.all(), sync_commands=True, reload=True
 )
 logger = Logger()
+db = DBC(DATABASE_URL)
 logger.log(LT.INFO, f"log level is set to {logger.log_type.name}")
 
 bot.load_extension("cogs")
