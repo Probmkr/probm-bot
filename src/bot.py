@@ -1,19 +1,37 @@
+import json
+from typing import List, TypedDict
 from disnake.ext import commands
 from lib import Logger
-from cogs import *
-from var import TOKEN
+from var import TOKEN, LT
 from flask import Flask, request, jsonify
+from webserver import web
 import disnake
 
-bot = commands.Bot(command_prefix='th!',
-                   intents=disnake.Intents.all(), sync_commands=True, reload=True)
+bot = commands.Bot(
+    command_prefix="th!", intents=disnake.Intents.all(), sync_commands=True, reload=True
+)
 logger = Logger()
 logger.log(LT.INFO, f"log level is set to {logger.log_type.name}")
 
-# @bot.command()
-# async def ping(ctx: commands.Context):
-#     await ctx.send("pong!")
+bot.load_extension("cogs")
 
-bot.load_extension('cogs')
+class State(TypedDict):
+    guild: int
+    role: int
+
+@web.route("/verify")
+async def verify():
+    ip = None
+    if request.headers.getlist("X-Forwarded-For"):
+        ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        ip = request.remote_addr
+    code = request.args.get("code")
+    state: State = json.loads(request.args.get("state"))
+    logger.log(LT.DEBUG, state)
+    role: disnake.Role = bot.get_guild(state["guild"]).get_role(state["role"])
+    print(role)
+    return jsonify({"code": code, "state": state, "ip": ip, "role": role.name})
+
 
 bot.run(TOKEN)

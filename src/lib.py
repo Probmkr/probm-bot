@@ -1,8 +1,10 @@
 from typing import List, TypedDict, Union
 from urllib import parse
-from var import API_URL, CC, LC, LT, DLT
+from var import API_URL, BOT_ID, BOT_SECRET, CC, LC, LT, DLT, ROLE_OAUTH_SCOPE, ROLE_OAUTH_URL, TOKEN
 from dotenv import load_dotenv
 from disnake.ext import commands
+import aiohttp
+import asyncio
 import disnake
 
 load_dotenv()
@@ -65,3 +67,30 @@ async def get_commands(bot: commands.Bot, *, message_commands=True, slash_comman
         if message_commands:
             result["message_commands"] = bot.commands
         return result
+
+
+class OAuth():
+    token: str
+    secret: str
+    id: int
+    session: aiohttp.ClientSession
+
+    def __init__(self, *, token=None, secret=None, id=None):
+        self.token = token or TOKEN
+        self.secret = secret or BOT_SECRET
+        self.id = id or BOT_ID
+
+    def create_session(self) -> aiohttp.ClientSession:
+        self.session = aiohttp.ClientSession()
+        return self.session
+
+    async def close_session(self) -> None:
+        await self.session.close()
+        del self.session
+
+    async def post_form(self, url: str, headers: dict, data: dict):
+        return await self.session.post(url, data=data, headers=headers)
+
+    async def get_token(self, code: str):
+        self.create_session()
+
