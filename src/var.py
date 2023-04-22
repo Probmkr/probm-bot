@@ -27,9 +27,6 @@ class LogLevel(Enum):
 
 LL: TypeAlias = LogLevel
 
-default_log_level: LL = LL(int(os.getenv("LOG_TYPE_NUM", "5")))
-DLL: TypeAlias = default_log_level
-
 
 class ConsoleColor(Enum):
     BLACK = '\033[30m'  # (文字)黒
