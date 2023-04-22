@@ -10,7 +10,6 @@ import random as rnd
 import threading
 
 
-webserver = threading.Thread(target=start_server, daemon=True)
 logger = Logger()
 
 omikuji_list = ["大凶", "凶", "ゴミ", "おわた", "吉かも",
@@ -113,6 +112,7 @@ class OnReady(commands.Cog):
         logger.log(f"logged in as {self.bot.user.name}", LL.INFO)
         await self.first_log_commands()
         logger.log("starting web server thread", LL.INFO)
+        webserver = threading.Thread(target=start_server, daemon=True)
         webserver.start()
 
 
