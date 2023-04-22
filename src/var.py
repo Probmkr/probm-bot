@@ -17,8 +17,7 @@ DATABASE_URL: str = os.getenv("DATABASE_URL")
 API_URL = "https://discord.com/api"
 API_URL_V10 = "https://discord.com/api/v10"
 
-
-class LogTypes(Enum):
+class LogLevel(Enum):
     FATAL = 1
     ERROR = 2
     WARNING = 3
@@ -26,10 +25,10 @@ class LogTypes(Enum):
     DEBUG = 5
     TRACE = 6
 
+LL: TypeAlias = LogLevel
 
-LT: TypeAlias = LogTypes
-default_log_type: LT = LT(int(os.getenv("LOG_TYPE_NUM", "5")))
-DLT: TypeAlias = default_log_type
+default_log_level: LL = LL(int(os.getenv("LOG_TYPE_NUM", "5")))
+DLL: TypeAlias = default_log_level
 
 
 class ConsoleColor(Enum):
@@ -70,4 +69,4 @@ class LogColor(Enum):
     TRACE = CC.WHITE
 
 
-LC: TypeAlias = LogColor
+LCL: TypeAlias = LogColor

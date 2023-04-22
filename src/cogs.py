@@ -2,7 +2,7 @@ from time import sleep
 from typing import List
 from disnake.ext import commands
 from lib import Logger, get_commands, get_oauth_url
-from var import CC, LT, ROLE_OAUTH_URL, ROLE_OAUTH_SCOPE
+from var import CC, LL, ROLE_OAUTH_URL, ROLE_OAUTH_SCOPE
 from webserver import start_server, web
 from flask import request
 import disnake
@@ -26,7 +26,7 @@ class Others(commands.Cog):
         if interaction.author.bot:
             return
         logger.log(
-            LT.TRACE,
+            LL.TRACE,
             f"{interaction.author.name} sent {CC.BG_BLUE.value}command{CC.BG_DEFAULT.value} `{interaction.application_command.name}` in `{interaction.guild.name if interaction.guild else 'DM'}`",
         )
 
@@ -35,7 +35,7 @@ class Others(commands.Cog):
         if message.author.bot:
             return
         logger.log(
-            LT.TRACE,
+            LL.TRACE,
             f"{message.author.name} sent {CC.BG_CYAN.value}message{CC.BG_DEFAULT.value} `{message.content}` in `{message.guild.name if message.guild else 'DM'}`",
         )
 
@@ -90,7 +90,7 @@ class Others(commands.Cog):
         for i in result:
             sleep(0.3)
             omikuji_text.add(i)
-            logger.log(LT.DEBUG, str(omikuji_text.texts))
+            logger.log(str(omikuji_text.texts), LL.DEBUG)
             await interaction.edit_original_message(str(omikuji_text))
 
 
@@ -101,18 +101,18 @@ class OnReady(commands.Cog):
     async def first_log_commands(self):
         slash_commands = await self.bot.fetch_global_commands()
         commands = self.bot.commands
-        logger.log(LT.DEBUG, "slash commands", custom_formats=[CC.BOLD])
+        logger.log("slash commands", LL.DEBUG, custom_formats=[CC.BOLD])
         for i in slash_commands:
-            logger.log(LT.DEBUG, f"{i.name}")
-        logger.log(LT.DEBUG, "message commands", custom_formats=[CC.BOLD])
+            logger.log(f"{i.name}", LL.DEBUG)
+        logger.log("message commands", LL.DEBUG, custom_formats=[CC.BOLD])
         for i in commands:
-            logger.log(LT.DEBUG, f"{i.name}")
+            logger.log(f"{i.name}", LL.DEBUG)
 
     @commands.Cog.listener()
     async def on_ready(self):
-        logger.log(LT.INFO, f"logged in as {self.bot.user.name}")
+        logger.log(f"logged in as {self.bot.user.name}", LL.INFO)
         await self.first_log_commands()
-        logger.log(LT.INFO, "starting web server thread")
+        logger.log("starting web server thread", LL.INFO)
         webserver.start()
 
 
@@ -149,85 +149,7 @@ class Ping(commands.Cog):
         await ctx.send(embed=embed)
 
 
-class Verify(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
-    async def give_role(
-        self, interaction: disnake.ApplicationCommandInteraction, role: disnake.Role
-    ):
-        if role in interaction.author.roles:
-            await interaction.response.send_message(
-                "You already have this role!", ephemeral=True
-            )
-            return
-        await interaction.author.add_roles(role)
-        await interaction.response.send_message(
-            f"You have been given the role `{role.name}`", ephemeral=True
-        )
-        logger.log(
-            LT.INFO, f"Giving role {role.name} to {interaction.author.name}")
-
-    @commands.slash_command(
-        name="get_role",
-        description="get role",
-        options=[
-            disnake.Option(
-                name="role",
-                description="role to get",
-                type=disnake.OptionType.role,
-                required=True,
-            )
-        ],
-    )
-    async def get_role(
-        self, interaction: disnake.ApplicationCommandInteraction, role: disnake.Role
-    ):
-        if interaction.author.guild_permissions.administrator:
-            view = disnake.ui.View()
-            url = get_oauth_url(
-                self.bot.user.id,
-                ROLE_OAUTH_URL,
-                ROLE_OAUTH_SCOPE,
-                "{"
-                + '"guild":{},"role":{}'.format(interaction.guild.id, role.id)
-                + "}",
-            )
-            print(url)
-            print(
-                "https://discord.com/api/oauth2/authorize?client_id=1004037991871815812&redirect_uri=https%3A%2F%2Fverify.probmkr.com%2Fverify&response_type=code&scope=identify"
-            )
-            button = disnake.ui.Button(
-                label="Get Role", style=disnake.ButtonStyle.primary, url=url
-            )
-            # button.callback = lambda inter: self.give_role(
-            #     inter, interaction.options["role"])
-            view.add_item(button)
-            embed = disnake.Embed(
-                title="Get Role",
-                description=f"You can click the button below to get the role: <@&{interaction.options['role'].id}>",
-                color=0x5555EE,
-            )
-            await interaction.response.send_message(embed=embed, view=view)
-        else:
-            await interaction.response.send_message(
-                "You need administrator permissions to use this command!",
-                ephemeral=True,
-            )
-
-
-class NewCogTest(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-
-    @commands.command()
-    async def extest(self, ctx: commands.Context):
-        await ctx.send("まさか Cogs も自動でロードされたりして...")
-
-
 def setup(bot: commands.Bot):
     bot.add_cog(Ping(bot))
-    bot.add_cog(Verify(bot))
     bot.add_cog(OnReady(bot))
     bot.add_cog(Others(bot))
-    bot.add_cog(NewCogTest(bot))
