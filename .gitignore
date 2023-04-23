@@ -5,6 +5,9 @@
 !/Procfile
 !/README.md
 !/.env.sample
+!/bot.sh
+
+# source code
 !/src/
 /src/__pycache__/
 /src/.mypy_cache
