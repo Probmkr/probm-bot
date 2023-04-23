@@ -25,8 +25,8 @@ class Others(commands.Cog):
         if interaction.author.bot:
             return
         logger.log(
-            LL.TRACE,
             f"{interaction.author.name} sent {CC.BG_BLUE.value}command{CC.BG_DEFAULT.value} `{interaction.application_command.name}` in `{interaction.guild.name if interaction.guild else 'DM'}`",
+            LL.TRACE,
         )
 
     @commands.Cog.listener()
@@ -34,8 +34,8 @@ class Others(commands.Cog):
         if message.author.bot:
             return
         logger.log(
-            LL.TRACE,
             f"{message.author.name} sent {CC.BG_CYAN.value}message{CC.BG_DEFAULT.value} `{message.content}` in `{message.guild.name if message.guild else 'DM'}`",
+            LL.TRACE,
         )
 
     @commands.command()

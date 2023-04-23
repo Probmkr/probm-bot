@@ -3,4 +3,4 @@ python-dotenv
 flask[async]
 aiohttp
 asyncio
-psycopg2-binary
+psycopg[binary]
